@@ -11,6 +11,7 @@ import com.example.kirstiebooras.colors.OnItemSelectedListener;
 import com.example.kirstiebooras.colors.R;
 import com.example.kirstiebooras.colors.database.QueryFactory;
 import com.example.kirstiebooras.colors.fragments.HueFragment;
+import com.example.kirstiebooras.colors.fragments.NamedColorFragment;
 import com.example.kirstiebooras.colors.fragments.SaturationFragment;
 import com.example.kirstiebooras.colors.fragments.ValueFragment;
 import com.example.kirstiebooras.colors.Gradient;
@@ -74,15 +75,21 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         Log.v(TAG, "onValueSelected");
         mGradientSelected = selected;
 
-        // Launch the ColorActivity
-        Intent intent = new Intent(this, ColorActivity.class);
-        intent.putExtra(QueryFactory.ARG_HUE_LOWER, selected.getLeftHue());
-        intent.putExtra(QueryFactory.ARG_HUE_UPPER, selected.getRightHue());
-        intent.putExtra(QueryFactory.ARG_SATURATION_LOWER, selected.getSaturation());
-        intent.putExtra(QueryFactory.ARG_SATURATION_UPPER, selected.getSaturation());
-        intent.putExtra(QueryFactory.ARG_VALUE_LOWER, selected.getValue());
-        intent.putExtra(QueryFactory.ARG_VALUE_UPPER, selected.getValue());
-        startActivity(intent);
+        // Display the ResultFragment
+        NamedColorFragment fragment = new NamedColorFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment).commit();
+    }
+
+    @Override
+    public void onStartAgain() {
+        Log.v(TAG, "onStartAgain");
+        mGradientSelected = null;
+
+        // Display the HueFragment
+        HueFragment fragment = new HueFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment).commit();
     }
 
     public Gradient getGradientSelected() {

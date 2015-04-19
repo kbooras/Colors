@@ -16,7 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ColorActivity">
+        <activity android:name=".fragments.NamedColorFragment">
         </activity>
         <provider android:name=".database.ColorContentProvider"
             android:authorities="com.example.kirstiebooras.provider.ColorContentProvider">

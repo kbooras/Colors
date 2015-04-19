@@ -7,4 +7,5 @@ public interface OnItemSelectedListener {
     public void onHueSelected(Gradient selected);
     public void onSaturationSelected(Gradient selected);
     public void onValueSelected(Gradient selected);
+    public void onStartAgain();
 }
