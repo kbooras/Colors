@@ -12,14 +12,27 @@
         android:paddingTop="16dp"
         android:textSize="14sp"/>
 
-    <Button
-        android:id="@+id/startAgainButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/start_again_button"
+        android:orientation="horizontal"
         android:paddingTop="16dp"
-        android:paddingBottom="16dp"/>
+        android:paddingBottom="16dp">
+
+        <Button
+            android:id="@+id/startAgainButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/start_again_button"/>
+
+        <Button
+            android:id="@+id/sortOrderButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/sort_order_button"/>
+    </LinearLayout>
 
     <ListView
         android:id="@id/android:list"

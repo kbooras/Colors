@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="sortArray">
+        <item>Hue, Saturation, Value</item>
+        <item>Hue, Value, Saturation</item>
+        <item>Saturation, Hue, Value</item>
+        <item>Saturation, Value, Hue</item>
+        <item>Value, Hue, Saturation</item>
+        <item>Value, Saturation, Hue</item>
+    </array>
+
+</resources>

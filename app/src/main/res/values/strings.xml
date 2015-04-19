@@ -6,4 +6,11 @@
     <string name="color_info_toast">%1$s\nHue: %2$d\nSaturation: %3$d\nValue: %4$d</string>
     <string name="start_again_button">Start Again?</string>
     <string name="gradient_details">Hue: %1$s - %2$s\nSaturation: %3$s\nValue: %4$s</string>
+    <string name="sort_order_button">Configure Sorting Order</string>
+    <string name="choose_sort_order">Choose a Sort Order:</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="preference_file_key">namedColorPreferences</string>
+    <string name="saved_sort_order">savedSortOrder</string>
+    <string name="saved_sort_order_index">savedSortOrderIndex</string>
 </resources>

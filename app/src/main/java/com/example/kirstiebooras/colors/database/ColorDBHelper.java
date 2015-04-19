@@ -34,7 +34,7 @@ public class ColorDBHelper extends SQLiteOpenHelper {
 
     private void createDatabaseFromTextFile(SQLiteDatabase db) {
         db.execSQL(ColorDatabaseContract.FeedEntry.SQL_DELETE_ENTRIES);
-        //db.execSQL(ColorDatabaseContract.FeedEntry.SQL_CREATE_ENTRIES);
+        db.execSQL(ColorDatabaseContract.FeedEntry.SQL_CREATE_ENTRIES);
     }
 
     private void initDatabaseData(SQLiteDatabase db) {

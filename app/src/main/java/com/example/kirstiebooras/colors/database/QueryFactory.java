@@ -5,12 +5,15 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 
 /**
  * Helper class for all queries. Returns a CursorLoader with the results of the query.
  * Created by kirstiebooras on 4/18/15.
  */
 public class QueryFactory {
+
+    public static final boolean DEBUG = true;
 
     public static final String ARG_ID = "id";
     public static final String ARG_SUBSTRING = "substring";
@@ -23,6 +26,7 @@ public class QueryFactory {
     public static final String ARG_VALUE = "value";
     public static final String ARG_VALUE_LOWER = "valueLower";
     public static final String ARG_VALUE_UPPER = "valueUpper";
+    public static final String ARG_SORT_ORDER = "sortOrder";
 
 
     private static final String[] sProjection = { ColorDatabaseContract.FeedEntry._ID,
@@ -39,7 +43,7 @@ public class QueryFactory {
         String[] selectionArgs = new String[1];
         selectionArgs[0] = String.valueOf(args.getInt(ARG_ID));
         return new CursorLoader(context, ColorContentProvider.CONTENT_URI, sProjection,
-                selection, selectionArgs, null);
+                selection, selectionArgs, args.getString(ARG_SORT_ORDER));
     }
 
     /**
@@ -50,7 +54,7 @@ public class QueryFactory {
         String[] selectionArgs = new String[1];
         selectionArgs[0] = "%" + args.getString(ARG_SUBSTRING) + "%";
         return new CursorLoader(context, ColorContentProvider.CONTENT_URI, sProjection,
-                selection, selectionArgs, null);
+                selection, selectionArgs, args.getString(ARG_SORT_ORDER));
     }
 
     /**
@@ -62,7 +66,7 @@ public class QueryFactory {
         int hue = (int) args.getFloat(ARG_HUE);
         selectionArgs[0] = String.valueOf(hue);
         return new CursorLoader(context, ColorContentProvider.CONTENT_URI, sProjection,
-                selection, selectionArgs, null);
+                selection, selectionArgs, args.getString(ARG_SORT_ORDER));
     }
 
     /**
@@ -76,7 +80,7 @@ public class QueryFactory {
         selectionArgs[0] = String.valueOf(hueLower);
         selectionArgs[1] = String.valueOf(hueupper);
         return new CursorLoader(context, ColorContentProvider.CONTENT_URI, sProjection,
-                selection, selectionArgs, null);
+                selection, selectionArgs, args.getString(ARG_SORT_ORDER));
     }
 
     /**
@@ -89,7 +93,7 @@ public class QueryFactory {
         int saturation = (int) (args.getFloat(ARG_SATURATION)*100);
         selectionArgs[0] = String.valueOf(saturation);
         return new CursorLoader(context, ColorContentProvider.CONTENT_URI, sProjection,
-                selection, selectionArgs, null);
+                selection, selectionArgs, args.getString(ARG_SORT_ORDER));
     }
 
     /**
@@ -104,7 +108,7 @@ public class QueryFactory {
         selectionArgs[0] = String.valueOf(lowerBound);
         selectionArgs[1] = String.valueOf(upperBound);
         return new CursorLoader(context, ColorContentProvider.CONTENT_URI, sProjection,
-                selection, selectionArgs, null);
+                selection, selectionArgs, args.getString(ARG_SORT_ORDER));
     }
 
     /**
@@ -117,7 +121,7 @@ public class QueryFactory {
         int value = (int)(args.getFloat(ARG_VALUE)*100);
         selectionArgs[0] = String.valueOf(value);
         return new CursorLoader(context, ColorContentProvider.CONTENT_URI, sProjection,
-                selection, selectionArgs, null);
+                selection, selectionArgs, args.getString(ARG_SORT_ORDER));
     }
 
     /**
@@ -132,7 +136,7 @@ public class QueryFactory {
         selectionArgs[0] = String.valueOf(lowerBound);
         selectionArgs[1] = String.valueOf(upperBound);
         return new CursorLoader(context, ColorContentProvider.CONTENT_URI, sProjection,
-                selection, selectionArgs, null);
+                selection, selectionArgs, args.getString(ARG_SORT_ORDER));
     }
 
 
@@ -159,8 +163,31 @@ public class QueryFactory {
         selectionArgs[4] = String.valueOf(valueLower);
         selectionArgs[5] = String.valueOf(valueUpper);
 
+        if (DEBUG) {
+            Cursor cur = context.getContentResolver().query(ColorContentProvider.CONTENT_URI, sProjection,
+                    selection, selectionArgs, args.getString(ARG_SORT_ORDER));
+            printEverythingFromCursor(cur);
+        }
+
         return new CursorLoader(context, ColorContentProvider.CONTENT_URI, sProjection,
-                selection, selectionArgs, null);
+                selection, selectionArgs, args.getString(ARG_SORT_ORDER));
+    }
+
+    /**
+     * For testing purposes.
+     */
+    private static void printEverythingFromCursor(Cursor cur) {
+        if (cur.getCount() != 0) {
+            cur.moveToFirst();
+            do {
+                String row_values = "";
+                for (int i = 0; i < cur.getColumnCount(); i++) {
+                    row_values = row_values + " || " + cur.getString(i);
+                }
+                Log.d("Factory", row_values);
+
+            } while (cur.moveToNext());
+        }
     }
 
 }

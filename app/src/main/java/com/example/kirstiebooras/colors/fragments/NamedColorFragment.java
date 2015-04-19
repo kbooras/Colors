@@ -1,6 +1,9 @@
 package com.example.kirstiebooras.colors.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
@@ -29,15 +32,8 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
     private static final String TAG = "NamedColorFragment";
 
     private static final int LOADER_ID_GET_FROM_HSV = 1;
-    private static final int LOADER_ID_GET_FROM_ID = 2;
-    private static final int LOADER_ID_GET_FROM_SUBSTRING = 3;
-    private static final int LOADER_ID_GET_FROM_HUE = 4;
-    private static final int LOADER_ID_GET_FROM_HUE_RANGE = 5;
-    private static final int LOADER_ID_GET_FROM_SATURATION = 6;
-    private static final int LOADER_ID_GET_FROM_SATURATION_RANGE = 7;
-    private static final int LOADER_ID_GET_FROM_VALUE = 8;
-    private static final int LOADER_ID_GET_FROM_VALUE_RANGE = 9;
-
+    private LoaderManager.LoaderCallbacks<Cursor> mCallbacks;
+    private SharedPreferences mSharedPref;
     private SimpleCursorAdapter mAdapter;
     private Context mContext;
 
@@ -69,33 +65,93 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
         textView.setText(String.format(getString(R.string.gradient_details), leftHue, rightHue,
                 saturation, value));
 
-        Button button = (Button) view.findViewById(R.id.startAgainButton);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button startAgainButton = (Button) view.findViewById(R.id.startAgainButton);
+        startAgainButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onStartAgain();
             }
         });
 
+        Button sortOrderButton = (Button) view.findViewById(R.id.sortOrderButton);
+        sortOrderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createSortOrderDialog();
+            }
+        });
+
+        // Load the named colors in the range into the listView
         String[] dataColumns = { ColorDatabaseContract.FeedEntry.COLUMN_COLOR_NAME };
         int[] viewIds = { android.R.id.text1 };
-
         mContext = getActivity().getBaseContext();
         mAdapter = new SimpleCursorAdapter(mContext,
                 android.R.layout.simple_list_item_1, null,
                 dataColumns, viewIds, 0);
-
         setListAdapter(mAdapter);
 
-        Bundle args = createBundle();
+        Bundle args;
+        mSharedPref = mContext.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        // Get persisted sortOrder
+        args = createBundle(mSharedPref.getString(getString(R.string.saved_sort_order), null));
+        mCallbacks = this;
         LoaderManager lm = getLoaderManager();
-        lm.initLoader(LOADER_ID_GET_FROM_HSV, args, this);
+        lm.initLoader(LOADER_ID_GET_FROM_HSV, args, mCallbacks);
 
         return view;
     }
 
+    private void createSortOrderDialog() {
+        int selected = mSharedPref.getInt(getString(R.string.saved_sort_order_index), -1);
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.choose_sort_order)
+                .setSingleChoiceItems(R.array.sortArray, selected, null)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                        int position = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                        Log.v(TAG, "SortOrder dialog clicked " + position);
+                        String sortOrder = null;
+                        switch (position) {
+                            case 0:
+                                sortOrder = "hue, saturation, value";
+                                break;
+                            case 1:
+                                sortOrder = "hue, value, saturation";
+                                break;
+                            case 2:
+                                sortOrder = "saturation, hue, value";
+                                break;
+                            case 3:
+                                sortOrder = "saturation, value, hue";
+                                break;
+                            case 4:
+                                sortOrder = "value, hue, saturation";
+                                break;
+                            case 5:
+                                sortOrder = "value, saturation, hue";
+                                break;
+                            default:
+                                break;
+                        }
+                        // Save the sortOrder to be used later
+                        SharedPreferences.Editor editor = mSharedPref.edit();
+                        editor.putString(getString(R.string.saved_sort_order), sortOrder);
+                        editor.putInt(getString(R.string.saved_sort_order_index), position);
+                        editor.apply();
+
+                        // Update the sortOrder for the cursor
+                        Bundle args = createBundle(sortOrder);
+                        getLoaderManager().restartLoader(LOADER_ID_GET_FROM_HSV, args, mCallbacks);
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show();
+    }
+
     // Create the bundle to be used by the loader
-    private Bundle createBundle() {
+    private Bundle createBundle(String sortOrder) {
         Bundle args = new Bundle();
         Gradient selected = ((MainActivity)getActivity()).getGradientSelected();
         args.putFloat(QueryFactory.ARG_HUE_LOWER, selected.getLeftHue());
@@ -104,6 +160,8 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
         args.putFloat(QueryFactory.ARG_SATURATION_UPPER, selected.getSaturation());
         args.putFloat(QueryFactory.ARG_VALUE_LOWER, selected.getValue());
         args.putFloat(QueryFactory.ARG_VALUE_UPPER, selected.getValue());
+        args.putString(QueryFactory.ARG_SORT_ORDER, sortOrder);
+
         return args;
     }
 
@@ -128,30 +186,6 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
             case LOADER_ID_GET_FROM_HSV:
                 loader = QueryFactory.getColorsFromHueSaturationValue(mContext, args);
                 break;
-            case LOADER_ID_GET_FROM_ID:
-                loader = QueryFactory.getColorFromId(mContext, args);
-                break;
-            case LOADER_ID_GET_FROM_SUBSTRING:
-                loader = QueryFactory.getColorsWithSubstring(mContext, args);
-                break;
-            case LOADER_ID_GET_FROM_HUE:
-                loader = QueryFactory.getColorsWithHue(mContext, args);
-                break;
-            case LOADER_ID_GET_FROM_HUE_RANGE:
-                loader = QueryFactory.getColorsInHueRange(mContext, args);
-                break;
-            case LOADER_ID_GET_FROM_SATURATION:
-                loader = QueryFactory.getColorsWithSaturation(mContext, args);
-                break;
-            case LOADER_ID_GET_FROM_SATURATION_RANGE:
-                loader = QueryFactory.getColorsInSaturationRange(mContext, args);
-                break;
-            case LOADER_ID_GET_FROM_VALUE:
-                loader = QueryFactory.getColorsWithValue(mContext, args);
-                break;
-            case LOADER_ID_GET_FROM_VALUE_RANGE:
-                loader = QueryFactory.getColorsInValueRange(mContext, args);
-                break;
             default:
                 throw new IllegalArgumentException("Invalid CursorLoader id");
         }
@@ -160,13 +194,7 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch (loader.getId()) {
-            case LOADER_ID_GET_FROM_HSV:
-                mAdapter.swapCursor(data);
-                break;
-            default:
-                break;
-        }
+        mAdapter.swapCursor(data);
     }
 
     @Override
@@ -178,22 +206,5 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    /**
-     * For testing purposes.
-     */
-    private static void printEverythingFromCursor(Cursor cur) {
-        if (cur.getCount() != 0) {
-            cur.moveToFirst();
-            do {
-                String row_values = "";
-                for (int i = 0; i < cur.getColumnCount(); i++) {
-                    row_values = row_values + " || " + cur.getString(i);
-                }
-                Log.d(TAG, row_values);
-
-            } while (cur.moveToNext());
-        }
     }
 }
