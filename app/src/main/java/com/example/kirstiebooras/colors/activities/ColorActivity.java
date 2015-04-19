@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kirstiebooras.colors.R;
@@ -58,6 +59,8 @@ public class ColorActivity extends Activity implements LoaderManager.LoaderCallb
             }
         });
 
+        setTextView(getIntent().getExtras());
+
         mCallbacks = this;
 
         LoaderManager lm = getLoaderManager();
@@ -75,6 +78,15 @@ public class ColorActivity extends Activity implements LoaderManager.LoaderCallb
         Toast.makeText(this,
                 String.format(getString(R.string.color_info_toast), name, hue, saturation, value),
                 Toast.LENGTH_LONG).show();
+    }
+
+    private void setTextView(Bundle args) {
+        int hueL = (int) args.getFloat(QueryFactory.ARG_HUE_LOWER);
+        int hueU = (int) args.getFloat(QueryFactory.ARG_HUE_UPPER);
+        int saturation = (int) (args.getFloat(QueryFactory.ARG_SATURATION_LOWER)*100);
+        int value = (int) (args.getFloat(QueryFactory.ARG_VALUE_LOWER)*100);
+        TextView textView = (TextView) findViewById(R.id.gradientDetails);
+        textView.setText(String.format(getString(R.string.gradient_details), hueL, hueU, saturation, value));
     }
 
     public void onStartAgain(View view) {
