@@ -30,7 +30,7 @@ import java.util.ArrayList;
 public class SaturationFragment extends ListFragment {
 
     private static final String TAG = "SaturationFragment";
-    private static final String NUM_SWATCHES = "numSwatches";
+    private static final String NUM_SWATCHES_SATURATION = "numSwatchesSaturation";
     private static final float VALUE = 1.0f;
     private int mNumSwatches;
     private ColorAdapter mAdapter;
@@ -67,7 +67,7 @@ public class SaturationFragment extends ListFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(NUM_SWATCHES, mNumSwatches);
+        outState.putInt(NUM_SWATCHES_SATURATION, mNumSwatches);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class SaturationFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
         Log.v(TAG, "onViewCreated");
 
-        mNumSwatches = (savedInstanceState != null) ? savedInstanceState.getInt(NUM_SWATCHES) : 10;
+        mNumSwatches = (savedInstanceState != null) ? savedInstanceState.getInt(NUM_SWATCHES_SATURATION) : 10;
         mAdapter = new ColorAdapter(getActivity().getBaseContext(), createGradients());
         setListAdapter(mAdapter);
     }

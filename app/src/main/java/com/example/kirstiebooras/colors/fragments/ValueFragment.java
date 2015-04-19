@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public class ValueFragment extends ListFragment {
 
     private static final String TAG = "ValueFragment";
-    private static final String NUM_SWATCHES = "numSwatches";
+    private static final String NUM_SWATCHES_VALUE = "numSwatchesValue";
     private int mNumSwatches;
     private ColorAdapter mAdapter;
     private OnItemSelectedListener mListener;
@@ -65,7 +65,7 @@ public class ValueFragment extends ListFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(NUM_SWATCHES, mNumSwatches);
+        outState.putInt(NUM_SWATCHES_VALUE, mNumSwatches);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class ValueFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
         Log.v(TAG, "onViewCreated");
 
-        mNumSwatches = (savedInstanceState != null) ? savedInstanceState.getInt(NUM_SWATCHES) : 10;
+        mNumSwatches = (savedInstanceState != null) ? savedInstanceState.getInt(NUM_SWATCHES_VALUE) : 10;
         mAdapter = new ColorAdapter(getActivity().getBaseContext(), createGradients());
         setListAdapter(mAdapter);
     }
