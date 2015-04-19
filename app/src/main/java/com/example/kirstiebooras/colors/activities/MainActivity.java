@@ -74,16 +74,14 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         Log.v(TAG, "onValueSelected");
         mGradientSelected = selected;
 
-        // Create bundle with info about gradient to be used in the query
-        Bundle data = new Bundle();
-        data.putFloat(QueryFactory.ARG_HUE_LOWER, selected.getRightHue());
-        data.putFloat(QueryFactory.ARG_HUE_UPPER, selected.getLeftHue());
-        data.putFloat(QueryFactory.ARG_SATURATION, selected.getSaturation());
-        data.putFloat(QueryFactory.ARG_VALUE, selected.getValue());
-
         // Launch the ColorActivity
         Intent intent = new Intent(this, ColorActivity.class);
-        intent.putExtra(ColorActivity.BUNDLE_COLOR_QUERY, data);
+        intent.putExtra(QueryFactory.ARG_HUE_LOWER, selected.getLeftHue());
+        intent.putExtra(QueryFactory.ARG_HUE_UPPER, selected.getRightHue());
+        intent.putExtra(QueryFactory.ARG_SATURATION_LOWER, selected.getSaturation());
+        intent.putExtra(QueryFactory.ARG_SATURATION_UPPER, selected.getSaturation());
+        intent.putExtra(QueryFactory.ARG_VALUE_LOWER, selected.getValue());
+        intent.putExtra(QueryFactory.ARG_VALUE_UPPER, selected.getValue());
         startActivity(intent);
     }
 

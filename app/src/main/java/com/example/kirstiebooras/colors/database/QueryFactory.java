@@ -5,7 +5,6 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 
 /**
  * Helper class for all queries. Returns a CursorLoader with the results of the query.
@@ -138,17 +137,12 @@ public class QueryFactory {
 
 
     public static Loader<Cursor> getColorsFromHueSaturationValue(Context context, Bundle args) {
-        Log.v("QueryFactory", "getColorsFromHueSaturationValue");
-        int hueLower = (int) args.getFloat(ARG_HUE, 0.0f);
-        int hueUpper = (int) args.getFloat(ARG_HUE, 360.0f);
+        int hueLower = (int) args.getFloat(ARG_HUE_LOWER, 0.0f);
+        int hueUpper = (int) args.getFloat(ARG_HUE_UPPER, 360.0f);
         int satLower = (int) (args.getFloat(ARG_SATURATION_LOWER, 0.0f)*100);
         int satUpper = (int) (args.getFloat(ARG_SATURATION_UPPER, 1.0f)*100);
         int valueLower = (int) (args.getFloat(ARG_VALUE_LOWER, 0.0f)*100);
         int valueUpper = (int) (args.getFloat(ARG_VALUE_UPPER, 1.0f)*100);
-        Log.v("QueryFactory", args.getFloat(ARG_HUE, 0.0f) + " " + args.getFloat(ARG_HUE, 360.0f)+
-                " " + args.getFloat(ARG_SATURATION_LOWER, 0.0f) + " " + args.getFloat(ARG_SATURATION_UPPER, 1.0f) +
-                " " + args.getFloat(ARG_VALUE_LOWER, 0.0f) + " " + args.getFloat(ARG_VALUE_UPPER, 1.0f));
-
 
         StringBuilder selectionBuilder = new StringBuilder("hue >= ?");
         if (hueLower > hueUpper) {
@@ -158,7 +152,6 @@ public class QueryFactory {
         }
         selectionBuilder.append("hue <= ? AND saturation >= ? AND saturation <= ? AND value >= ? AND value <= ?");
         String selection = selectionBuilder.toString();
-        Log.v("QueryFactory", selection);
 
         String[] selectionArgs = new String[6];
         selectionArgs[0] = String.valueOf(hueLower);
@@ -168,9 +161,6 @@ public class QueryFactory {
         selectionArgs[4] = String.valueOf(valueLower);
         selectionArgs[5] = String.valueOf(valueUpper);
 
-        for (int i = 0; i < selectionArgs.length; i++) {
-            Log.v("QueryFactory", "selectionArgs " + selectionArgs[i]);
-        }
         return new CursorLoader(context, ColorContentProvider.CONTENT_URI, sProjection,
                 selection, selectionArgs, null);
     }

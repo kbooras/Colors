@@ -22,8 +22,6 @@ public class ColorActivity extends Activity implements LoaderManager.LoaderCallb
 
     private static final String TAG = "ColorActivity";
 
-    public static final String BUNDLE_COLOR_QUERY = "bundleColorQuery";
-
     private static final int LOADER_ID_GET_FROM_HSV = 1;
     private static final int LOADER_ID_GET_FROM_ID = 2;
     private static final int LOADER_ID_GET_FROM_SUBSTRING = 3;
@@ -60,13 +58,12 @@ public class ColorActivity extends Activity implements LoaderManager.LoaderCallb
 
         mCallbacks = this;
 
-        Intent intent = getIntent();
         LoaderManager lm = getLoaderManager();
-        lm.initLoader(LOADER_ID_GET_FROM_HSV, intent.getBundleExtra(BUNDLE_COLOR_QUERY), mCallbacks);
+        lm.initLoader(LOADER_ID_GET_FROM_HSV, getIntent().getExtras(), mCallbacks);
 
     }
 
-    public void onStartAgain() {
+    public void onStartAgain(View view) {
         Log.v(TAG, "onStartAgain");
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
@@ -113,7 +110,6 @@ public class ColorActivity extends Activity implements LoaderManager.LoaderCallb
         Loader<Cursor> loader;
         switch (id) {
             case LOADER_ID_GET_FROM_HSV:
-                Log.v(TAG, "get loader");
                 loader = QueryFactory.getColorsFromHueSaturationValue(getBaseContext(), args);
                 break;
             case LOADER_ID_GET_FROM_ID:
