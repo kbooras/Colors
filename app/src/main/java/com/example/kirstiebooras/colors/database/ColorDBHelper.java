@@ -10,12 +10,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
+ * The DBHelper
  * Created by kirstiebooras on 4/17/15.
  */
 public class ColorDBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Color.db";
+    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "Color.db";
     private static final String LOG_TAG = "ColorDBHelper";
     private Context mContext;
 
@@ -40,7 +41,7 @@ public class ColorDBHelper extends SQLiteOpenHelper {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new InputStreamReader(mContext.getAssets().open("color.txt")), 1024 * 4);
-            String line = null;
+            String line;
             db.beginTransaction();
             while ((line = br.readLine()) != null) {
                 db.execSQL(line);

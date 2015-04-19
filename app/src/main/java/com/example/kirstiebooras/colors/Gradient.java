@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * Object encapsulating a gradient.
  * Created by kirstiebooras on 4/15/15.
  */
 public class Gradient implements Parcelable {

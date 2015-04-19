@@ -25,7 +25,7 @@ public class ColorContentProvider extends ContentProvider {
     private static final int COLORS = 10;
     private static final int COLOR_ID = 20;
 
-    public static final String AUTHORITY = "com.example.kirstiebooras.provider.ColorContentProvider";
+    private static final String AUTHORITY = "com.example.kirstiebooras.provider.ColorContentProvider";
     private static final String BASE_PATH = "colors";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
             + "/" + BASE_PATH);
@@ -48,10 +48,7 @@ public class ColorContentProvider extends ContentProvider {
         // permissions to be writable
         mDB = dbHelper.getWritableDatabase();
         printTableData();
-        if(mDB == null)
-            return false;
-        else
-            return true;
+        return mDB != null;
     }
 
     @Override
@@ -112,8 +109,8 @@ public class ColorContentProvider extends ContentProvider {
                 ColorDatabaseContract.FeedEntry.COLUMN_SATURATION,
                 ColorDatabaseContract.FeedEntry.COLUMN_VALUE};
         if (projection != null) {
-            HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
-            HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));
+            HashSet<String> requestedColumns = new HashSet<>(Arrays.asList(projection));
+            HashSet<String> availableColumns = new HashSet<>(Arrays.asList(available));
             // check if all columns which are requested are available
             if (!availableColumns.containsAll(requestedColumns)) {
                 throw new IllegalArgumentException("Unknown columns in projection");
@@ -137,5 +134,6 @@ public class ColorContentProvider extends ContentProvider {
                 Log.d("LOG_TAG_HERE", row_values);
             }while (cur.moveToNext());
         }
+        cur.close();
     }
 }

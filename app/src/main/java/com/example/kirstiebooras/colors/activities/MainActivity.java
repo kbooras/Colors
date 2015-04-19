@@ -1,6 +1,5 @@
 package com.example.kirstiebooras.colors.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -9,7 +8,6 @@ import android.view.MenuItem;
 
 import com.example.kirstiebooras.colors.OnItemSelectedListener;
 import com.example.kirstiebooras.colors.R;
-import com.example.kirstiebooras.colors.database.QueryFactory;
 import com.example.kirstiebooras.colors.fragments.HueFragment;
 import com.example.kirstiebooras.colors.fragments.NamedColorFragment;
 import com.example.kirstiebooras.colors.fragments.SaturationFragment;
