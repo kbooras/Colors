@@ -20,8 +20,8 @@ import java.util.ArrayList;
 public class HueFragment extends ListFragment {
 
     private static final String TAG = "HueFragment";
-    private static final float SATURATION = 1.0f;
-    private static final float VALUE = 1.0f;
+    private static final int SATURATION = 100;
+    private static final int VALUE = 100;
     private ColorAdapter mAdapter;
     private OnItemSelectedListener mListener;
 

@@ -51,7 +51,7 @@ public class SaturationFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.v(TAG, "onCreateView");
-        View view = inflater.inflate(R.layout.fragment_saturation, container, false);
+        View view = inflater.inflate(R.layout.fragment_listview_button, container, false);
 
         Button button = (Button) view.findViewById(R.id.configureSwatchesButton);
         button.setOnClickListener(new View.OnClickListener() {
@@ -75,12 +75,7 @@ public class SaturationFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
         Log.v(TAG, "onViewCreated");
 
-        if (savedInstanceState != null) {
-            mNumSwatches = savedInstanceState.getInt(NUM_SWATCHES);
-        }
-        else {
-            mNumSwatches = 10;
-        }
+        mNumSwatches = (savedInstanceState != null) ? savedInstanceState.getInt(NUM_SWATCHES) : 10;
         mAdapter = new ColorAdapter(getActivity().getBaseContext(), createGradients());
         setListAdapter(mAdapter);
     }
@@ -127,17 +122,18 @@ public class SaturationFragment extends ListFragment {
     }
 
     private ArrayList<Gradient> createGradients() {
-        ArrayList<Gradient> gradients = new ArrayList<>();
+        ArrayList<Gradient> gradients = new ArrayList<>(mNumSwatches);
 
         Gradient gradient =((MainActivity) getActivity()).getGradientSelected();
 
-        int interval = 100 / mNumSwatches;
+        double interval = 1.0/mNumSwatches;
 
         // Create gradients at varying saturation levels (100% to 0%)
-        for (int i = 100; i >= 0; i -= interval) {
-            float saturation = (float) i / 100.0f;
+        double saturation = 1.0;
+        for (int i = 0; i < mNumSwatches; i++) {
             gradients.add(new Gradient(gradient.getLeftHue(), gradient.getRightHue(),
-                    saturation, VALUE));
+                    (float)saturation, VALUE));
+            saturation -= interval;
         }
 
         return gradients;

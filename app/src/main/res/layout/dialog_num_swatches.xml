@@ -18,6 +18,6 @@
         android:id="@+id/seek"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:max="100"/>
+        android:max="256"/>
 
 </LinearLayout>
