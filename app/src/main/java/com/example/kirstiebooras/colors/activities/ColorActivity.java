@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.example.kirstiebooras.colors.R;
 import com.example.kirstiebooras.colors.database.ColorDatabaseContract;
@@ -53,6 +54,7 @@ public class ColorActivity extends Activity implements LoaderManager.LoaderCallb
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Display the info about the color
+                displayColorInfo(position);
             }
         });
 
@@ -61,6 +63,18 @@ public class ColorActivity extends Activity implements LoaderManager.LoaderCallb
         LoaderManager lm = getLoaderManager();
         lm.initLoader(LOADER_ID_GET_FROM_HSV, getIntent().getExtras(), mCallbacks);
 
+    }
+
+    private void displayColorInfo(int position) {
+        Cursor c = mAdapter.getCursor();
+        c.moveToPosition(position);
+        String name = c.getString(c.getColumnIndex(ColorDatabaseContract.FeedEntry.COLUMN_COLOR_NAME));
+        int hue = c.getInt(c.getColumnIndex(ColorDatabaseContract.FeedEntry.COLUMN_HUE));
+        int saturation = c.getInt(c.getColumnIndex(ColorDatabaseContract.FeedEntry.COLUMN_SATURATION));
+        int value = c.getInt(c.getColumnIndex(ColorDatabaseContract.FeedEntry.COLUMN_VALUE));
+        Toast.makeText(this,
+                String.format(getString(R.string.color_info_toast), name, hue, saturation, value),
+                Toast.LENGTH_LONG).show();
     }
 
     public void onStartAgain(View view) {

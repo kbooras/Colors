@@ -3,4 +3,5 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="color_info_toast">%1$s\nHue: %2$d\nSaturation: %3$d\nValue: %4$d</string>
 </resources>

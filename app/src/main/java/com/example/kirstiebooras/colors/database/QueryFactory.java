@@ -144,14 +144,12 @@ public class QueryFactory {
         int valueLower = (int) (args.getFloat(ARG_VALUE_LOWER, 0.0f)*100);
         int valueUpper = (int) (args.getFloat(ARG_VALUE_UPPER, 1.0f)*100);
 
-        StringBuilder selectionBuilder = new StringBuilder("hue >= ?");
+        String selection;
         if (hueLower > hueUpper) {
-            selectionBuilder.append(" OR ");
+            selection = "(hue >= ? OR hue <= ?) AND saturation >= ? AND saturation <= ? AND value >= ? AND value <= ?";
         } else {
-            selectionBuilder.append(" AND ");
+            selection = "hue >= ? AND hue <= ? AND saturation >= ? AND saturation <= ? AND value >= ? AND value <= ?";
         }
-        selectionBuilder.append("hue <= ? AND saturation >= ? AND saturation <= ? AND value >= ? AND value <= ?");
-        String selection = selectionBuilder.toString();
 
         String[] selectionArgs = new String[6];
         selectionArgs[0] = String.valueOf(hueLower);
