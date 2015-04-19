@@ -81,25 +81,32 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
             }
         });
 
-        // Load the named colors in the range into the listView
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         String[] dataColumns = { ColorDatabaseContract.FeedEntry.COLUMN_COLOR_NAME };
         int[] viewIds = { android.R.id.text1 };
+
+        // Load the named colors in the range into the listView
         mContext = getActivity().getBaseContext();
         mAdapter = new SimpleCursorAdapter(mContext,
                 android.R.layout.simple_list_item_1, null,
                 dataColumns, viewIds, 0);
         setListAdapter(mAdapter);
 
-        Bundle args;
+        // Get persisted sortOrder
         mSharedPref = mContext.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        // Get persisted sortOrder
+        Bundle args;
         args = createBundle(mSharedPref.getString(getString(R.string.saved_sort_order), null));
+
         mCallbacks = this;
         LoaderManager lm = getLoaderManager();
         lm.initLoader(LOADER_ID_GET_FROM_HSV, args, mCallbacks);
-
-        return view;
     }
 
     private void createSortOrderDialog() {
