@@ -19,7 +19,7 @@
     <string name="saved_value_num_swatches">savedValueNumSwatches</string>
     <string name="configure_color_swatches">Configure Color Swatches</string>
     <string name="choose_number_of_swatches">Choose a Number of Swatches:</string>
-    <string name="center_hue">Center hue: %1$s</string>
+    <string name="center_hue">Center hue: %1$s%%</string>
     <string name="num_swatches">%1$s swatches</string>
     <string name="configure_hue_swatches">Choose Central Hue and Number of Swatches:</string>
 </resources>

@@ -5,6 +5,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -12,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -108,6 +112,10 @@ public class HueFragment extends ListFragment {
         final TextView swatchText = (TextView) view.findViewById(R.id.numSwatchesTxt);
         swatchText.setText(String.format(getString(R.string.num_swatches), mNumSwatches));
 
+        final ImageView imageView = (ImageView) view.findViewById(R.id.huePreview);
+        float[] hsv = new float[] {mCentralHue, SATURATION, VALUE};
+        imageView.setBackgroundColor(Color.HSVToColor(hsv));
+
         SeekBar seekHue = (SeekBar) view.findViewById(R.id.seekHue);
         seekHue.setProgress(mCentralHue);
         seekHue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -115,6 +123,8 @@ public class HueFragment extends ListFragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mCentralHue = progress;
                 hueText.setText(String.format(getString(R.string.center_hue), progress));
+                float[] hsv = new float[] {mCentralHue, SATURATION, VALUE};
+                imageView.setBackgroundColor(Color.HSVToColor(hsv));
 
                 // Save the number of swatches to be used later
                 SharedPreferences.Editor editor = mSharedPref.edit();
