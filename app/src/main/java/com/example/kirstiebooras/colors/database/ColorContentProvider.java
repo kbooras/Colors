@@ -47,7 +47,6 @@ public class ColorContentProvider extends ContentProvider {
         ColorDBHelper dbHelper = new ColorDBHelper(context);
         // permissions to be writable
         mDB = dbHelper.getWritableDatabase();
-        printTableData();
         return mDB != null;
     }
 

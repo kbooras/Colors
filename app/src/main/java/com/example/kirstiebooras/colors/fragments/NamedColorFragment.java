@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -60,6 +63,11 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
         String rightHue = String.valueOf(gradient.getRightHue());
         String saturation = String.valueOf(gradient.getSaturation());
         String value = String.valueOf(gradient.getValue());
+
+        ImageView imageView = (ImageView) view.findViewById(R.id.colorPreview);
+        imageView.setBackground(new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[]{gradient.getLeftColor(), gradient.getRightColor()}));
 
         TextView textView = (TextView) view.findViewById(R.id.gradientDetails);
         textView.setText(String.format(getString(R.string.gradient_details), leftHue, rightHue,
