@@ -14,6 +14,7 @@ import android.util.Log;
 public class QueryFactory {
 
     public static final boolean DEBUG = true;
+    private static final int DELTA = 5;
 
     public static final String ARG_ID = "id";
     public static final String ARG_SUBSTRING = "substring";
@@ -158,10 +159,10 @@ public class QueryFactory {
         String[] selectionArgs = new String[6];
         selectionArgs[0] = String.valueOf(hueLower);
         selectionArgs[1] = String.valueOf(hueUpper);
-        selectionArgs[2] = String.valueOf(satLower);
-        selectionArgs[3] = String.valueOf(satUpper);
-        selectionArgs[4] = String.valueOf(valueLower);
-        selectionArgs[5] = String.valueOf(valueUpper);
+        selectionArgs[2] = (satLower >= DELTA) ? String.valueOf(satLower - DELTA) : String.valueOf(satLower);
+        selectionArgs[3] = (satUpper <= 100 - DELTA) ? String.valueOf(satUpper + DELTA) : String.valueOf(satUpper);
+        selectionArgs[4] = (valueLower >= DELTA) ? String.valueOf(valueLower - DELTA) : String.valueOf(valueLower);
+        selectionArgs[5] = (valueUpper <= 100 - DELTA) ? String.valueOf(valueUpper + DELTA) : String.valueOf(valueUpper);
 
         if (DEBUG) {
             Cursor cur = context.getContentResolver().query(ColorContentProvider.CONTENT_URI, sProjection,
