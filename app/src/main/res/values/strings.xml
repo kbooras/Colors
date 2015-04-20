@@ -13,7 +13,13 @@
     <string name="preference_file_key">namedColorPreferences</string>
     <string name="saved_sort_order">savedSortOrder</string>
     <string name="saved_sort_order_index">savedSortOrderIndex</string>
+    <string name="saved_central_hue">savedCentralHue</string>
+    <string name="saved_hue_num_swatches">savedHueNumSwatches</string>
+    <string name="saved_saturation_num_swatches">savedSaturationNumSwatches</string>
+    <string name="saved_value_num_swatches">savedValueNumSwatches</string>
     <string name="configure_color_swatches">Configure Color Swatches</string>
     <string name="choose_number_of_swatches">Choose a Number of Swatches:</string>
+    <string name="center_hue">Center hue: %1$s</string>
     <string name="num_swatches">%1$s swatches</string>
+    <string name="configure_hue_swatches">Choose Central Hue and Number of Swatches:</string>
 </resources>

@@ -2,7 +2,9 @@ package com.example.kirstiebooras.colors.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -30,8 +32,9 @@ import java.util.ArrayList;
 public class SaturationFragment extends ListFragment {
 
     private static final String TAG = "SaturationFragment";
-    private static final String NUM_SWATCHES_SATURATION = "numSwatchesSaturation";
+    private static final String NUM_SWATCHES = "numSwatches";
     private static final float VALUE = 1.0f;
+    private SharedPreferences mSharedPref;
     private int mNumSwatches;
     private ColorAdapter mAdapter;
     private OnItemSelectedListener mListener;
@@ -67,7 +70,7 @@ public class SaturationFragment extends ListFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(NUM_SWATCHES_SATURATION, mNumSwatches);
+        outState.putInt(NUM_SWATCHES, mNumSwatches);
     }
 
     @Override
@@ -75,8 +78,16 @@ public class SaturationFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
         Log.v(TAG, "onViewCreated");
 
-        mNumSwatches = (savedInstanceState != null) ? savedInstanceState.getInt(NUM_SWATCHES_SATURATION) : 10;
-        mAdapter = new ColorAdapter(getActivity().getBaseContext(), createGradients());
+        // Get persisted number of swatches
+        Context context = getActivity().getBaseContext();
+        mSharedPref = context.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        mNumSwatches = (savedInstanceState != null) ?
+                        savedInstanceState.getInt(NUM_SWATCHES) :
+                        mSharedPref.getInt(getString(R.string.saved_saturation_num_swatches), 10);
+
+        // Set up the adapter
+        mAdapter = new ColorAdapter(context, createGradients());
         setListAdapter(mAdapter);
     }
 
@@ -93,6 +104,11 @@ public class SaturationFragment extends ListFragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mNumSwatches = progress;
                 textView.setText(String.format(getString(R.string.num_swatches), progress));
+
+                // Save the number of swatches to be used later
+                SharedPreferences.Editor editor = mSharedPref.edit();
+                editor.putInt(getString(R.string.saved_saturation_num_swatches), mNumSwatches);
+                editor.apply();
             }
 
             @Override
