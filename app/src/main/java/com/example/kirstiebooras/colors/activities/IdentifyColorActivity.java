@@ -74,11 +74,10 @@ public class IdentifyColorActivity extends FragmentActivity implements OnItemSel
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
 
         // Save a file: path for use with ACTION_VIEW intents
         // String currentPhotoPath = "file:" + imageFile.getAbsolutePath();
-        return imageFile;
+        return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
     @Override
@@ -123,7 +122,6 @@ public class IdentifyColorActivity extends FragmentActivity implements OnItemSel
         int greenAverage = greens/pixelCount;
         int blueAverage = blues/pixelCount;
 
-        Log.v(TAG, "Found color: " + Integer.toHexString(Color.rgb(redAverage, greenAverage, blueAverage)));
         float[] hsv = new float[3];
         Color.RGBToHSV(redAverage, greenAverage, blueAverage, hsv);
         Log.v(TAG, "Found color: " + hsv[0] + " " + hsv[1] + " " + hsv[2]);
@@ -134,8 +132,8 @@ public class IdentifyColorActivity extends FragmentActivity implements OnItemSel
     private void findMatch(float[] hsv) {
         Cursor cur = QueryFactory.findColorMatch(this, hsv);
         if (cur.getCount() != 0) {
-            Log.v(TAG, "match!");
             // Match found!
+            Log.d(TAG, "Match found");
             cur.moveToFirst();
             String name = cur.getString(1);
             int hue = cur.getInt(2);
@@ -145,7 +143,7 @@ public class IdentifyColorActivity extends FragmentActivity implements OnItemSel
 
         } else {
             // No match found
-            Log.v(TAG, "no match!");
+            Log.d(TAG, "No match found");
             mMatchFragment.setNoMatchViewDetails();
         }
     }

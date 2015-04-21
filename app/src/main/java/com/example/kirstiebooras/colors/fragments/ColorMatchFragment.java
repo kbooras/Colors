@@ -1,5 +1,6 @@
 package com.example.kirstiebooras.colors.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.example.kirstiebooras.colors.R;
 
 /**
+ * Fragment displaying if an exact color match was found or not.
  * Created by kirstiebooras on 4/20/15.
  */
 public class ColorMatchFragment extends Fragment {
@@ -36,7 +38,8 @@ public class ColorMatchFragment extends Fragment {
 
     public void setMatchViewDetails(String name, int hue, int sat, int value) {
         mMatchStatus.setText(getString(R.string.exact_match));
-        // mColorSwatch.setBackground();
+        float[] hsv = new float[]{hue, sat, value};
+        mColorSwatch.setBackgroundColor(Color.HSVToColor(hsv));
         mColorDetails.setText(String.format(getString(R.string.color_details), name, hue, sat, value));
     }
 

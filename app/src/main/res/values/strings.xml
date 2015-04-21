@@ -27,4 +27,5 @@
     <string name="exact_match">Exact Match Found</string>
     <string name="no_match">No Match Found</string>
     <string name="similar_colors">Similar Colors</string>
+    <string name="hue_preview">Hue preview</string>
 </resources>
