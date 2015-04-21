@@ -22,4 +22,6 @@
     <string name="center_hue">Center hue: %1$s%%</string>
     <string name="num_swatches">%1$s swatches</string>
     <string name="configure_hue_swatches">Choose Central Hue and Number of Swatches:</string>
+    <string name="identify_color">Identify a Color</string>
+    <string name="color_explorer">Color Explorer</string>
 </resources>

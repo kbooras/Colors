@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -26,10 +25,14 @@ import android.widget.Toast;
 import com.example.kirstiebooras.colors.Gradient;
 import com.example.kirstiebooras.colors.OnItemSelectedListener;
 import com.example.kirstiebooras.colors.R;
-import com.example.kirstiebooras.colors.activities.MainActivity;
+import com.example.kirstiebooras.colors.activities.ColorExplorerActivity;
 import com.example.kirstiebooras.colors.database.ColorDatabaseContract;
 import com.example.kirstiebooras.colors.database.QueryFactory;
 
+/**
+ * Displays a list of named colors in the selected range.
+ * Created by kirstiebooras on 4/15/15.
+ */
 public class NamedColorFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "NamedColorFragment";
@@ -58,7 +61,7 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_named_color, container, false);
 
-        Gradient gradient =((MainActivity) getActivity()).getGradientSelected();
+        Gradient gradient =((ColorExplorerActivity) getActivity()).getGradientSelected();
         String leftHue = String.valueOf(gradient.getLeftHue());
         String rightHue = String.valueOf(gradient.getRightHue());
         String saturation = String.valueOf(gradient.getSaturation());
@@ -168,7 +171,7 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
     // Create the bundle to be used by the loader
     private Bundle createBundle(String sortOrder) {
         Bundle args = new Bundle();
-        Gradient selected = ((MainActivity)getActivity()).getGradientSelected();
+        Gradient selected = ((ColorExplorerActivity)getActivity()).getGradientSelected();
         args.putFloat(QueryFactory.ARG_HUE_LOWER, selected.getLeftHue());
         args.putFloat(QueryFactory.ARG_HUE_UPPER, selected.getRightHue());
         args.putFloat(QueryFactory.ARG_SATURATION_LOWER, selected.getSaturation());

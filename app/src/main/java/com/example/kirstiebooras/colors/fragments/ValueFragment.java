@@ -17,9 +17,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.kirstiebooras.colors.R;
+import com.example.kirstiebooras.colors.activities.ColorExplorerActivity;
 import com.example.kirstiebooras.colors.adapters.ColorAdapter;
 import com.example.kirstiebooras.colors.Gradient;
-import com.example.kirstiebooras.colors.activities.MainActivity;
 import com.example.kirstiebooras.colors.OnItemSelectedListener;
 
 import java.util.ArrayList;
@@ -138,7 +138,7 @@ public class ValueFragment extends ListFragment {
     private ArrayList<Gradient> createGradients() {
         ArrayList<Gradient> gradients = new ArrayList<>(mNumSwatches);
 
-        Gradient gradient =((MainActivity) getActivity()).getGradientSelected();
+        Gradient gradient =((ColorExplorerActivity) getActivity()).getGradientSelected();
 
         double interval = 1.0/mNumSwatches;
 
