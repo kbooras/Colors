@@ -41,7 +41,10 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
     private LoaderManager.LoaderCallbacks<Cursor> mCallbacks;
     private SharedPreferences mSharedPref;
     private SimpleCursorAdapter mAdapter;
+    private Gradient mGradient;
     private Context mContext;
+    private ImageView mImageView;
+    private TextView mTextView;
 
     private OnItemSelectedListener mListener;
 
@@ -61,20 +64,8 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_named_color, container, false);
 
-        Gradient gradient =((ColorExplorerActivity) getActivity()).getGradientSelected();
-        String leftHue = String.valueOf(gradient.getLeftHue());
-        String rightHue = String.valueOf(gradient.getRightHue());
-        String saturation = String.valueOf(gradient.getSaturation());
-        String value = String.valueOf(gradient.getValue());
-
-        ImageView imageView = (ImageView) view.findViewById(R.id.colorPreview);
-        imageView.setBackground(new GradientDrawable(
-                GradientDrawable.Orientation.LEFT_RIGHT,
-                new int[]{gradient.getLeftColor(), gradient.getRightColor()}));
-
-        TextView textView = (TextView) view.findViewById(R.id.gradientDetails);
-        textView.setText(String.format(getString(R.string.gradient_details), leftHue, rightHue,
-                saturation, value));
+        mImageView = (ImageView) view.findViewById(R.id.colorPreview);
+        mTextView = (TextView) view.findViewById(R.id.gradientDetails);
 
         Button startAgainButton = (Button) view.findViewById(R.id.startAgainButton);
         startAgainButton.setOnClickListener(new View.OnClickListener() {
@@ -109,13 +100,42 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
                 dataColumns, viewIds, 0);
         setListAdapter(mAdapter);
 
-        // Get persisted sortOrder
         mSharedPref = mContext.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        Bundle args;
-        args = createBundle(mSharedPref.getString(getString(R.string.saved_sort_order), null));
 
         mCallbacks = this;
+
+        // If this is part of the ColorExplorerActivity, we can immediately set the view details
+        if (getActivity() instanceof ColorExplorerActivity) {
+            setGradient(((ColorExplorerActivity) getActivity()).getGradientSelected());
+        }
+    }
+
+    // Sets up the view based on the gradient passed in
+    public void setGradient(Gradient gradient) {
+        mGradient = gradient;
+        setViewDetails();
+        initLoader();
+    }
+
+    private void setViewDetails() {
+        String leftHue = String.valueOf(mGradient.getLeftHue());
+        String rightHue = String.valueOf(mGradient.getRightHue());
+        String saturation = String.valueOf(mGradient.getSaturation());
+        String value = String.valueOf(mGradient.getValue());
+
+        mImageView.setBackground(new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[]{mGradient.getLeftColor(), mGradient.getRightColor()}));
+
+        mTextView.setText(String.format(getString(R.string.gradient_details), leftHue, rightHue,
+                saturation, value));
+    }
+
+    private void initLoader() {
+        // Get persisted sortOrder and create bundle
+        Bundle args = createBundle(mSharedPref.getString(getString(R.string.saved_sort_order), null));
+        // Create loader with this bundle
         LoaderManager lm = getLoaderManager();
         lm.initLoader(LOADER_ID_GET_FROM_HSV, args, mCallbacks);
     }
@@ -171,13 +191,12 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
     // Create the bundle to be used by the loader
     private Bundle createBundle(String sortOrder) {
         Bundle args = new Bundle();
-        Gradient selected = ((ColorExplorerActivity)getActivity()).getGradientSelected();
-        args.putFloat(QueryFactory.ARG_HUE_LOWER, selected.getLeftHue());
-        args.putFloat(QueryFactory.ARG_HUE_UPPER, selected.getRightHue());
-        args.putFloat(QueryFactory.ARG_SATURATION_LOWER, selected.getSaturation());
-        args.putFloat(QueryFactory.ARG_SATURATION_UPPER, selected.getSaturation());
-        args.putFloat(QueryFactory.ARG_VALUE_LOWER, selected.getValue());
-        args.putFloat(QueryFactory.ARG_VALUE_UPPER, selected.getValue());
+        args.putFloat(QueryFactory.ARG_HUE_LOWER, mGradient.getLeftHue());
+        args.putFloat(QueryFactory.ARG_HUE_UPPER, mGradient.getRightHue());
+        args.putFloat(QueryFactory.ARG_SATURATION_LOWER, mGradient.getSaturation());
+        args.putFloat(QueryFactory.ARG_SATURATION_UPPER, mGradient.getSaturation());
+        args.putFloat(QueryFactory.ARG_VALUE_LOWER, mGradient.getValue());
+        args.putFloat(QueryFactory.ARG_VALUE_UPPER, mGradient.getValue());
         args.putString(QueryFactory.ARG_SORT_ORDER, sortOrder);
 
         return args;
@@ -193,7 +212,7 @@ public class NamedColorFragment extends ListFragment implements LoaderManager.Lo
         int saturation = c.getInt(c.getColumnIndex(ColorDatabaseContract.FeedEntry.COLUMN_SATURATION));
         int value = c.getInt(c.getColumnIndex(ColorDatabaseContract.FeedEntry.COLUMN_VALUE));
 
-        Toast.makeText(mContext, String.format(getString(R.string.color_info_toast), name, hue,
+        Toast.makeText(mContext, String.format(getString(R.string.color_details), name, hue,
                 saturation, value), Toast.LENGTH_LONG).show();
     }
 

@@ -1,5 +1,6 @@
 package com.example.kirstiebooras.colors.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -88,10 +89,9 @@ public class ColorExplorerActivity extends FragmentActivity implements OnItemSel
         Log.v(TAG, "onStartAgain");
         mGradientSelected = null;
 
-        // Display the HueFragment
-        HueFragment fragment = new HueFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment).commit();
+        // Display the MainActivity
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     public Gradient getGradientSelected() {

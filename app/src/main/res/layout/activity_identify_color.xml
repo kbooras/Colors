@@ -2,11 +2,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
+    <fragment
+        android:id="@+id/colorMatchFragment"
+        android:layout_height="0dp"
+        android:layout_weight="3"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        class="com.example.kirstiebooras.colors.fragments.ColorMatchFragment" ></fragment>
+
+    <TextView
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:background="#99b0bd"
+        android:text="@string/similar_colors"
+        android:textColor="#000000"
+        android:textSize="16sp"/>
+
+    <fragment
+        android:id="@+id/namedColorFragment"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:layout_width="match_parent"
+        class="com.example.kirstiebooras.colors.fragments.NamedColorFragment"></fragment>
 
 </LinearLayout> 

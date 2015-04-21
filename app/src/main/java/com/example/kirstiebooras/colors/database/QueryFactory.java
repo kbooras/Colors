@@ -140,6 +140,24 @@ public class QueryFactory {
                 selection, selectionArgs, args.getString(ARG_SORT_ORDER));
     }
 
+    public static Cursor findColorMatch(Context context, float[] hsv) {
+        int hue = (int) hsv[0];
+        int saturation = (int) hsv[1]*100;
+        int value = (int) hsv[2]*100;
+
+        String selection = "hue = ? AND saturation = ? AND value = ?";
+        String[] selectionArgs = new String[] {String.valueOf(hue), String.valueOf(saturation),
+                                               String.valueOf(value)};
+
+        Cursor cur = context.getContentResolver().query(ColorContentProvider.CONTENT_URI, sProjection,
+                selection, selectionArgs, null);
+
+        if (DEBUG) {
+            printEverythingFromCursor(cur);
+        }
+
+        return cur;
+    }
 
     public static Loader<Cursor> getColorsFromHueSaturationValue(Context context, Bundle args) {
         int hueLower = (int) args.getFloat(ARG_HUE_LOWER, 0.0f);

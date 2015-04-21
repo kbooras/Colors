@@ -1,8 +1,8 @@
 package com.example.kirstiebooras.colors.activities;
 
 
-import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -11,33 +11,44 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.kirstiebooras.colors.Gradient;
+import com.example.kirstiebooras.colors.OnItemSelectedListener;
 import com.example.kirstiebooras.colors.R;
+import com.example.kirstiebooras.colors.database.QueryFactory;
+import com.example.kirstiebooras.colors.fragments.ColorMatchFragment;
+import com.example.kirstiebooras.colors.fragments.NamedColorFragment;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Activity to identify dominant color in a picture
  * Created by kirstiebooras on 4/20/15.
  */
-public class IdentifyColorActivity extends FragmentActivity {
+public class IdentifyColorActivity extends FragmentActivity implements OnItemSelectedListener {
 
     private static final String TAG = "IdentifyColorActivity";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    private ColorMatchFragment mMatchFragment;
+    private NamedColorFragment mSimilarFragment;
     private Uri mImageUri;
-    private String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identify_color);
+
+        mMatchFragment = (ColorMatchFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.colorMatchFragment);
+        mSimilarFragment = (NamedColorFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.namedColorFragment);
+
+        Log.v(TAG, "create fragments");
 
         // Launch the camera and get a photo as a result
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -66,7 +77,7 @@ public class IdentifyColorActivity extends FragmentActivity {
         File imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
 
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + imageFile.getAbsolutePath();
+        // String currentPhotoPath = "file:" + imageFile.getAbsolutePath();
         return imageFile;
     }
 
@@ -85,11 +96,8 @@ public class IdentifyColorActivity extends FragmentActivity {
 
             if (bitmap != null) {
                 float[] hsv = getDominantColor(bitmap);
-                if (foundExactMatch(hsv)) {
-
-                } else {
-
-                }
+                findMatch(hsv);
+                findSimilarColors(hsv);
             }
         }
     }
@@ -122,9 +130,54 @@ public class IdentifyColorActivity extends FragmentActivity {
         return hsv;
     }
 
-    // Query if there is a match for the color in the database
-    private boolean foundExactMatch(float[] hsv) {
-        return false;
+    // Query for a match for the color in the database
+    private void findMatch(float[] hsv) {
+        Cursor cur = QueryFactory.findColorMatch(this, hsv);
+        if (cur.getCount() != 0) {
+            Log.v(TAG, "match!");
+            // Match found!
+            cur.moveToFirst();
+            String name = cur.getString(1);
+            int hue = cur.getInt(2);
+            int saturation = cur.getInt(3);
+            int value = cur.getInt(4);
+            mMatchFragment.setMatchViewDetails(name, hue, saturation, value);
+
+        } else {
+            // No match found
+            Log.v(TAG, "no match!");
+            mMatchFragment.setNoMatchViewDetails();
+        }
     }
 
+    private void findSimilarColors(float[] hsv) {
+        int delta = 8;
+        float hue = hsv[0];
+        float leftHue = (hue < delta) ? 360 - delta : (hue - delta) % 360;
+        float rightHue = (hue + delta) % 360;
+        Gradient gradient = new Gradient(leftHue, rightHue, hsv[1], hsv[2]);
+        mSimilarFragment.setGradient(gradient);
+    }
+
+    @Override
+    public void onHueSelected(Gradient selected) {
+
+    }
+
+    @Override
+    public void onSaturationSelected(Gradient selected) {
+
+    }
+
+    @Override
+    public void onValueSelected(Gradient selected) {
+
+    }
+
+    @Override
+    public void onStartAgain() {
+        // Display the MainActivity
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
 }
