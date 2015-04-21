@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.kirstiebooras.colors" >
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.ColorExplorerActivity"/>
+        <activity android:name=".activities.IdentifyColorActivity"/>
         <provider android:name=".database.ColorContentProvider"
             android:authorities="com.example.kirstiebooras.provider.ColorContentProvider">
         </provider>
